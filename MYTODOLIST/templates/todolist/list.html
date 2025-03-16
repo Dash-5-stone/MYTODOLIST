@@ -1,0 +1,52 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <title>TO DO LIST</title>
+</head>
+<body>
+    <h1 class="flex items-center justify-center mt-12 text-3xl font-bold text-[#002D74]">TO DO LIST</h1>
+    <section class="flex items-center justify-center mt-8">
+        <form method="POST" action="{% url 'list' %}" class="flex items-center">
+            {% csrf_token %}
+            <div class="mt-12">
+                <label for="tache" class="m-5 text-lg font-medium text-gray-700">Entrez une tache</label>
+                <input type="text" name="tache" id="tache" required class="w-96 p-2 border rounded-lg shadow-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+            </div>
+            <button type="submit" class="flex items-center justify-center mt-12 text-white font-bold bg-[#002D74] w-24 p-2 rounded-lg ml-8 hover:scale-105">Ajouter</button>
+        </form>
+    </section>
+    <section class="flex justify-center mt-8">
+        <table class="w-3/4 bg-white rounded-lg shadow-md">
+            <thead class="bg-[#002D74] text-white">
+                <tr>
+                    <th class="px-6 py-3 text-left">Tâche</th>
+                    <th class="px-6 py-3 text-left">Date de création</th>
+                    <th class="px-6 py-3 text-left">Date limite</th>
+                    <th class="px-6 py-3 text-left">Statut</th>
+                    
+                    <th class="px-6 py-3 text-center">Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for tache in taches %}
+                <tr class="border-b hover:bg-gray-50">
+                    <td class="px-6 py-4">{{ tache.tache }}</td>
+                    <td class="px-6 py-4">{{ tache.date_creation|date:"d/m/Y H:i" }}</td>
+                    <td class="px-6 py-4">{{ tache.date_limite|date:"d/m/Y" }}</td>
+                    <td class="px-6 py-4">{{ tache.get_status_display }}</td>
+                    <td class="px-6 py-4 flex justify-center gap-2">
+                        <a href="{% url 'modifier' tache.id %}" class="bg-yellow-500 text-white px-4 py-2 rounded-lg hover:scale-105 duration-300" >Modifier</a>
+                        <a href="{% url 'delete' tache.id %}" class="bg-red-500 text-white px-4 py-2 rounded-lg hover:scale-105 duration-300" onclick="return confirm('Êtes-vous sûr de vouloir supprimer cette tâche ?')">Supprimer</a>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </section>
+</body>
+</html>
